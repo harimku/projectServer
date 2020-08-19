@@ -44,12 +44,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/homedecor', homedecorRouter);
-app.use('/automotive', automotiveRouter);
+app.use('/homedecors', homedecorRouter);
+app.use('/automotives', automotiveRouter);
 app.use('/electronics', electronicsRouter);
-app.use('/fashion', fashionRouter);
+app.use('/fashions', fashionRouter);
 app.use('/outdoors', outdoorsRouter);
-app.use('/pet', petRouter);
+app.use('/pets', petRouter);
 app.use('/cart', cartRouter);
 
 

@@ -31,7 +31,7 @@ electronicsRouter.route('/')
     res.end(`PUT operation not supported on /electronics`);
 })
 .delete((req, res, next) => {
-    Homedecor.deleteMany()
+    Electronic.deleteMany()
     .then(response => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
