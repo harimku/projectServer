@@ -29,6 +29,11 @@ const homedecorSchema = new Schema({
         min: 1,
         max: 5,
         required: true
+    },
+    quantity: {
+        type: Number,
+        min: 1,
+        required: true
     }
 }, {  //second, optional argument for configuration options
     timestamps: true
