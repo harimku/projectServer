@@ -1,53 +1,78 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const Automotive = require('../models/automotive');
 
 const automotiveRouter = express.Router();
 
 automotiveRouter.use(bodyParser.json());
 
 automotiveRouter.route('/')
-.all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
+.get((req, res, next) => {
+    Automotive.find()   //returns promise
+    .then(automotives => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(automotives);
+    })
+    .catch(err => next(err));   //pass err off to the overall error handler for this express application
 })
-.get((req, res) => {
-    res.end('Will send all the automotive products to you');
-})
-.post((req, res) => {
-    res.statusCode = 403;  //operation not supported
-    res.end('POST operation not supported on /automotive');
+.post((req, res, next) => {
+    Automotive.create(req.body)   //returns promise (mongoose checks if data fits schema)
+    .then(automotive => {
+        console.log('Product Created ', automotive);
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(automotive);
+    })
+    .catch(err => next(err));
 })
 .put((req, res) => {
-    res.statusCode = 403;  //operation not supported
-    res.end('PUT operation not supported on /automotive');
+    res.statusCode = 403;
+    res.end(`PUT operation not supported on /automotives`);
 })
-.delete((req, res) => {
-    res.statusCode = 403;  //operation not supported
-    res.end('DELETE operation not supported on /automotive');
+.delete((req, res, next) => {
+    Automotive.deleteMany()
+    .then(response => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(response);
+    })
+    .catch(err => next(err));
 });
 
 automotiveRouter.route('/:productId')
-.all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
-})
-.get((req, res) => {
-    res.end(`Will send details of the automotive product: ${req.params.productId} to you`);
+.get((req, res, next) => {
+    Automotive.findById(req.params.productId)
+    .then(automotive => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(automotive);
+    })
+    .catch(err => next(err));
 })
 .post((req, res) => {
     res.statusCode = 403;
-    res.end(`POST operation not supported on /automotive/${req.params.productId}`);
+    res.end(`POST operation not supported on /automotives/${req.params.productId}`);
 })
-.put((req, res) => {
-    res.statusCode = 403;
-    res.end(`PUT operation not supported on /automotive/${req.params.productId}`);
+.put((req, res, next) => {
+    Automotive.findByIdAndUpdate(req.params.productId, {
+        $set: req.body
+    }, { new: true })
+    .then(automotive => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(automotive);
+    })
+    .catch(err => next(err));
 })
-.delete((req, res) => {
-    res.statusCode = 403;
-    res.end(`DELETE operation not supported on /automotive/${req.params.productId}`);
+.delete((req, res, next) => {
+    Automotive.findByIdAndDelete(req.params.productId)
+    .then(response => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(response);
+    })
+    .catch(err => next(err));
 });
-
 
 module.exports = automotiveRouter;
