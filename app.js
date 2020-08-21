@@ -6,6 +6,8 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+
+//custom routers
 const homedecorRouter = require('./routes/homedecorRouter');
 const automotiveRouter = require('./routes/automotiveRouter');
 const electronicsRouter = require('./routes/electronicsRouter');
@@ -18,16 +20,15 @@ const cartRouter = require('./routes/cartRouter');
 const mongoose = require('mongoose');
 const url = 'mongodb://localhost:27017/project';
 const connect = mongoose.connect(url, {
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useNewUrlParser: true, 
-    useUnifiedTopology: true
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 connect.then(
-    () => console.log('Connected correctly to server'), 
-    err => console.log(err)
+  () => console.log('Connected correctly to server'),
+  err => console.log(err)
 );
-
 
 var app = express();
 
@@ -52,15 +53,13 @@ app.use('/outdoors', outdoorsRouter);
 app.use('/pets', petRouter);
 app.use('/cart', cartRouter);
 
-
-
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
