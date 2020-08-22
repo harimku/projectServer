@@ -1,27 +1,83 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const Cartitem = require('../models/cartitem');
+const authenticate = require('../authenticate');
 
 const cartRouter = express.Router();
 
 cartRouter.use(bodyParser.json());
 
-cartRouter.route('/')
-.all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
-})
-.get((req, res) => {
-    res.end('Will send all products in cart to you');
-})
-.post((req, res) => {
-    res.end(`Will add the product: ${req.body.name} to cart`);
-})
-.put((req, res) => {
-    res.end(`Will update the product: ${req.body.name} in cart`);
-})
-.delete((req, res) => {
-    res.end('Deleting all items in cart');
-});
+cartRouter
+    .route('/')
+    .get(authenticate.verifyUser, (req, res, next) => {
+        Cartitem.find()
+            .then(cartitems => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(cartitems);
+            })
+            .catch(err => next(err));   
+    })
+    .post(authenticate.verifyUser, (req, res, next) => {
+        Cartitem.create(req.body)
+            .then(cartitem => {
+                console.log('Product Created ', cartitem);
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(cartitem);
+            })
+            .catch(err => next(err));
+    })
+    .put(authenticate.verifyUser, (req, res) => {
+        res.statusCode = 403;
+        res.end(`PUT operation not supported on /cartitems`);
+    })
+    .delete(authenticate.verifyUser, (req, res, next) => {
+        Cartitem.deleteMany()
+            .then(response => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(response);
+            })
+            .catch(err => next(err));
+    });
+
+cartRouter
+    .route('/:productId')
+    .get(authenticate.verifyUser, (req, res, next) => {
+        Cartitem.findById(req.params.productId)
+            .then(cartitem => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(cartitem);
+            })
+            .catch(err => next(err));
+    })
+    .post(authenticate.verifyUser, (req, res) => {
+        res.statusCode = 403;
+        res.end(`POST operation not supported on /cartitems/${req.params.productId}`);
+    })
+    .put(authenticate.verifyUser, (req, res, next) => {
+        Cartitem.findByIdAndUpdate(
+            req.params.productId, 
+            { $set: req.body }, 
+            { new: true }
+        )
+            .then(cartitem => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(cartitem);
+            })
+            .catch(err => next(err));
+    })
+    .delete(authenticate.verifyUser, (req, res, next) => {
+        Cartitem.findByIdAndDelete(req.params.productId)
+            .then(response => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(response);
+            })
+            .catch(err => next(err));
+    });
 
 module.exports = cartRouter;
