@@ -1,5 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const User = require('../models/user');
+const passport = require('passport');
+const authenticate = require('../authenticate');
+
+const router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
