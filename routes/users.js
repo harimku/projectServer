@@ -3,12 +3,6 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-<<<<<<< Updated upstream
-  res.send('respond with a resource');
-});
-
-module.exports = router;
-=======
     res.send('respond with a resource');
 });
 
@@ -70,4 +64,3 @@ router.get('/logout', (req, res, next) => {
 });
 
 module.exports = router;
->>>>>>> Stashed changes

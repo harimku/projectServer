@@ -5,15 +5,10 @@ const logger = require('morgan');
 const passport = require('passport');
 const config = require('./config');
 
-<<<<<<< Updated upstream
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-=======
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
 //custom routers
->>>>>>> Stashed changes
 const homedecorRouter = require('./routes/homedecorRouter');
 const automotiveRouter = require('./routes/automotiveRouter');
 const electronicsRouter = require('./routes/electronicsRouter');
@@ -36,12 +31,7 @@ connect.then(
     err => console.log(err)
 );
 
-<<<<<<< Updated upstream
-
-var app = express();
-=======
 const app = express();
->>>>>>> Stashed changes
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -65,29 +55,16 @@ app.use('/outdoors', outdoorsRouter);
 app.use('/pets', petRouter);
 app.use('/cart', cartRouter);
 
-
-
 // catch 404 and forward to error handler
-<<<<<<< Updated upstream
 app.use(function(req, res, next) {
-  next(createError(404));
-=======
-app.use(function (req, res, next) {
     next(createError(404));
->>>>>>> Stashed changes
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-<<<<<<< Updated upstream
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-=======
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
->>>>>>> Stashed changes
 
     // render the error page
     res.status(err.status || 500);
