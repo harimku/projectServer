@@ -19,7 +19,8 @@ const cartRouter = require('./routes/cartRouter');
 
 //connect to the MongoDB server
 const mongoose = require('mongoose');
-const url = 'mongodb://localhost:27017/project';
+const { read } = require("fs");
+const url = config.mongoUrl;
 const connect = mongoose.connect(url, {
     useCreateIndex: true,
     useFindAndModify: false,
