@@ -18,7 +18,7 @@ outdoorRouter
             })
             .catch(err => next(err));
     })
-    .post(authenticate.verifyUser, (req, res, next) => {
+    .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Outdoor.create(req.body)
             .then(outdoor => {
                 console.log('Product Created ', outdoor);
@@ -28,11 +28,11 @@ outdoorRouter
             })
             .catch(err => next(err));
     })
-    .put(authenticate.verifyUser, (req, res) => {
+    .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res) => {
         res.statusCode = 403;
         res.end(`PUT operation not supported on /outdoors`);
     })
-    .delete(authenticate.verifyUser, (req, res, next) => {
+    .delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Outdoor.deleteMany()
             .then(response => {
                 res.statusCode = 200;
@@ -53,11 +53,11 @@ outdoorRouter
             })
             .catch(err => next(err));
     })
-    .post(authenticate.verifyUser, (req, res) => {
+    .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res) => {
         res.statusCode = 403;
         res.end(`POST operation not supported on /outdoors/${req.params.productId}`);
     })
-    .put(authenticate.verifyUser, (req, res, next) => {
+    .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Outdoor.findByIdAndUpdate(
             req.params.productId, 
             { $set: req.body }, 
@@ -70,7 +70,7 @@ outdoorRouter
             })
             .catch(err => next(err));
     })
-    .delete(authenticate.verifyUser, (req, res, next) => {
+    .delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Outdoor.findByIdAndDelete(req.params.productId)
             .then(response => {
                 res.statusCode = 200;

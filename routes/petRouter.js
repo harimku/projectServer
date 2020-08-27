@@ -18,7 +18,7 @@ petRouter
             })
             .catch(err => next(err));
     })
-    .post(authenticate.verifyUser, (req, res, next) => {
+    .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Pet.create(req.body)
             .then(pet => {
                 console.log('Product Created ', pet);
@@ -28,11 +28,11 @@ petRouter
             })
             .catch(err => next(err));
     })
-    .put(authenticate.verifyUser, (req, res) => {
+    .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res) => {
         res.statusCode = 403;
         res.end(`PUT operation not supported on /pets`);
     })
-    .delete(authenticate.verifyUser, (req, res, next) => {
+    .delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Pet.deleteMany()
             .then(response => {
                 res.statusCode = 200;
@@ -53,11 +53,11 @@ petRouter
             })
             .catch(err => next(err));
     })
-    .post(authenticate.verifyUser, (req, res) => {
+    .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res) => {
         res.statusCode = 403;
         res.end(`POST operation not supported on /pets/${req.params.productId}`);
     })
-    .put(authenticate.verifyUser, (req, res, next) => {
+    .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Pet.findByIdAndUpdate(
             req.params.productId,
             { $set: req.body },
@@ -70,7 +70,7 @@ petRouter
             })
             .catch(err => next(err));
     })
-    .delete(authenticate.verifyUser, (req, res, next) => {
+    .delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Pet.findByIdAndDelete(req.params.productId)
             .then(response => {
                 res.statusCode = 200;

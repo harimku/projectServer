@@ -18,7 +18,7 @@ automotiveRouter
             })
             .catch(err => next(err));   
     })
-    .post(authenticate.verifyUser, (req, res, next) => {
+    .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Automotive.create(req.body)
             .then(automotive => {
                 console.log('Product Created ', automotive);
@@ -28,11 +28,11 @@ automotiveRouter
             })
             .catch(err => next(err));
     })
-    .put(authenticate.verifyUser, (req, res) => {
+    .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res) => {
         res.statusCode = 403;
         res.end(`PUT operation not supported on /automotives`);
     })
-    .delete(authenticate.verifyUser, (req, res, next) => {
+    .delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Automotive.deleteMany()
             .then(response => {
                 res.statusCode = 200;
@@ -53,11 +53,11 @@ automotiveRouter
             })
             .catch(err => next(err));
     })
-    .post(authenticate.verifyUser, (req, res) => {
+    .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res) => {
         res.statusCode = 403;
         res.end(`POST operation not supported on /automotives/${req.params.productId}`);
     })
-    .put(authenticate.verifyUser, (req, res, next) => {
+    .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Automotive.findByIdAndUpdate(
             req.params.productId, 
             { $set: req.body }, 
@@ -70,7 +70,7 @@ automotiveRouter
             })
             .catch(err => next(err));
     })
-    .delete(authenticate.verifyUser, (req, res, next) => {
+    .delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Automotive.findByIdAndDelete(req.params.productId)
             .then(response => {
                 res.statusCode = 200;

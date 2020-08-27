@@ -18,7 +18,7 @@ homedecorRouter
             })
             .catch(err => next(err));
     })
-    .post(authenticate.verifyUser, (req, res, next) => {
+    .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Homedecor.create(req.body)
             .then(homedecor => {
                 console.log('Product Created ', homedecor);
@@ -28,11 +28,11 @@ homedecorRouter
             })
             .catch(err => next(err));
     })
-    .put(authenticate.verifyUser, (req, res) => {
+    .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res) => {
         res.statusCode = 403;
         res.end(`PUT operation not supported on /homedecors`);
     })
-    .delete(authenticate.verifyUser, (req, res, next) => {
+    .delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Homedecor.deleteMany()
             .then(response => {
                 res.statusCode = 200;
@@ -53,11 +53,11 @@ homedecorRouter
             })
             .catch(err => next(err));
     })
-    .post(authenticate.verifyUser, (req, res) => {
+    .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res) => {
         res.statusCode = 403;
         res.end(`POST operation not supported on /homedecors/${req.params.productId}`);
     })
-    .put(authenticate.verifyUser, (req, res, next) => {
+    .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Homedecor.findByIdAndUpdate(
             req.params.productId, 
             { $set: req.body }, 
@@ -70,7 +70,7 @@ homedecorRouter
             })
             .catch(err => next(err));
     })
-    .delete(authenticate.verifyUser, (req, res, next) => {
+    .delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Homedecor.findByIdAndDelete(req.params.productId)
             .then(response => {
                 res.statusCode = 200;
