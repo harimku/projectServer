@@ -10,7 +10,8 @@ cartRouter.use(bodyParser.json());
 cartRouter
     .route('/')
     .get(authenticate.verifyUser, (req, res, next) => {
-        Cartitem.find()
+        Cartitem.find({"user": req.user._id})
+            .populate('user')
             .then(cartitems => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
@@ -19,6 +20,7 @@ cartRouter
             .catch(err => next(err));   
     })
     .post(authenticate.verifyUser, (req, res, next) => {
+        req.body.user = req.user._id;
         Cartitem.create(req.body)
             .then(cartitem => {
                 console.log('Product Created ', cartitem);
@@ -33,23 +35,25 @@ cartRouter
         res.end(`PUT operation not supported on /cartitems`);
     })
     .delete(authenticate.verifyUser, (req, res, next) => {
-        Cartitem.deleteMany()
-            .then(response => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(response);
-            })
-            .catch(err => next(err));
+        res.statusCode = 403;
+        res.end(`DELETE operation not supported on /cartitems`);
     });
 
 cartRouter
     .route('/:productId')
     .get(authenticate.verifyUser, (req, res, next) => {
         Cartitem.findById(req.params.productId)
+            .populate('user')
             .then(cartitem => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(cartitem);
+                if (cartitem.user.equals(req.user._id)) {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(cartitem);
+                } else {
+                    err = new Error('This is not an item in your cart!');
+                    err.status = 403;
+                    return next(err);
+                }
             })
             .catch(err => next(err));
     })
@@ -64,18 +68,34 @@ cartRouter
             { new: true }
         )
             .then(cartitem => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(cartitem);
+                if (cartitem.user.equals(req.user._id)) {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(cartitem);
+                } else {
+                    err = new Error('This is not an item in your cart!');
+                    err.status = 403;
+                    return next(err);
+                }
             })
             .catch(err => next(err));
     })
     .delete(authenticate.verifyUser, (req, res, next) => {
-        Cartitem.findByIdAndDelete(req.params.productId)
-            .then(response => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(response);
+        Cartitem.findById(req.params.productId)
+            .then(cartitem => {
+                if (cartitem.user.equals(req.user._id)) {
+                    Cartitem.findByIdAndDelete(req.params.productId)
+                        .then(response => {
+                            res.statusCode = 200;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json(response);
+                        })
+                        .catch(err => next(err));
+                } else {
+                    err = new Error('This is not an item in your cart!');
+                    err.status = 403;
+                    return next(err);
+                }
             })
             .catch(err => next(err));
     });

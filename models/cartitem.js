@@ -34,6 +34,10 @@ const cartitemSchema = new Schema({
         type: Number,
         min: 1,
         required: true
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 }, {  //second, optional argument for configuration options
     timestamps: true
