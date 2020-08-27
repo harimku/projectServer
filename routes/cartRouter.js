@@ -10,7 +10,7 @@ cartRouter.use(bodyParser.json());
 cartRouter
     .route('/')
     .get(authenticate.verifyUser, (req, res, next) => {
-        Cartitem.find()
+        Cartitem.find({"user": req.user._id})
             .populate('user')
             .then(cartitems => {
                 res.statusCode = 200;
