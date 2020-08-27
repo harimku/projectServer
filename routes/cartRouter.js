@@ -11,6 +11,7 @@ cartRouter
     .route('/')
     .get(authenticate.verifyUser, (req, res, next) => {
         Cartitem.find()
+            .populate('user')
             .then(cartitems => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
@@ -19,6 +20,7 @@ cartRouter
             .catch(err => next(err));   
     })
     .post(authenticate.verifyUser, (req, res, next) => {
+        req.body.user = req.user._id;
         Cartitem.create(req.body)
             .then(cartitem => {
                 console.log('Product Created ', cartitem);
@@ -46,6 +48,7 @@ cartRouter
     .route('/:productId')
     .get(authenticate.verifyUser, (req, res, next) => {
         Cartitem.findById(req.params.productId)
+            .populate('user')
             .then(cartitem => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
