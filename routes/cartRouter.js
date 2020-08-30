@@ -5,7 +5,7 @@ const authenticate = require('../authenticate');
 
 const cartRouter = express.Router();
 
-cartRouter.use(bodyParser.json());
+cartRouter.use(bodyParser.json())
 cartRouter.get('/', authenticate.verifyUser, getCart)
 cartRouter.post('/', authenticate.verifyUser, postCart)
 cartRouter.put('/', authenticate.verifyUser, putCart)
