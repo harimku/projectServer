@@ -8,8 +8,7 @@ const Currency = mongoose.Types.Currency;
 const cartitemSchema = new Schema({
     name: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     description: {
         type: String,

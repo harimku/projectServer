@@ -53,12 +53,11 @@ async function deleteCart (req, res) {
 async function getCartItem (req, res) {
     try {
         const cartitem = await Cartitem.findById(req.params.productId).populate('user')
-        cartitem ?
-      
-            (cartitem.user.equals(req.user._id)) ?
-            res.status(200).json(cartitem) : res.status(403).json('This is not an item in your cart!')
-            : res.status(403).json('This is not an item in your cart!')
-              
+        if (cartitem.user.equals(req.user._id)) {
+            res.status(200).json(cartitem)
+        } else {
+            res.status(403).json('This is not an item in your cart!')
+        }
     } catch (err) {
         res.status(403).json('This is not an item in your cart!')
     }
@@ -83,35 +82,28 @@ async function putCartItem (req, res) {
         if (cartitem.user.equals(req.user._id)) {
             res.status(200).json(cartitem);
         } else {
-            err = new Error('This is not an item in your cart!');
-            err.status = 403;
-            return next(err);
+            res.status(403).json('This is not an item in your cart!');
         }
     } catch (err) {
-       err => next(err);
+        res.status(403).json('This is not an item in your cart!');
     }
 }
 
 async function deleteCartItem (req, res) {
     try {
         const cartitem = await Cartitem.findById(req.params.productId);
-        if (cartitem.user.equals(req.user._id)){
-            res.status(200).json(cartitem);
-            Cartitem.findByIdAndDelete(req.params.productId)
-                .then(response => {
-                    res.status(200).json(response);
-                })
-                .catch(err => next(err));
+        if (cartitem.user.equals(req.user._id)) {
+            const response = await Cartitem.findByIdAndDelete(req.params.productId);
+            res.status(200).json(response);
         } else {
-            err = new Error('This is not an item in your cart!');
-            err.status = 403;
-            return next(err);
+            res.status(403).json('This is not an item in your cart!');
         }
     } catch (err) {
-       err => next(err);
+        res.status(403).json('Could not delete this item!');
     }
 }
 
+        
 /*
 cartRouter
     .route('/')
