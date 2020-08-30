@@ -8,8 +8,7 @@ const Currency = mongoose.Types.Currency;
 const cartitemSchema = new Schema({
     name: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     description: {
         type: String,
@@ -39,8 +38,6 @@ const cartitemSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }
-}, {  //second, optional argument for configuration options
-    timestamps: true
 });
 
 // Create a model using the schema
