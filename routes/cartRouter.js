@@ -5,7 +5,7 @@ const authenticate = require('../authenticate');
 
 const cartRouter = express.Router();
 
-cartRouter.use(bodyParser.json());
+cartRouter.use(bodyParser.json())
 cartRouter.get('/', authenticate.verifyUser, getCart)
 cartRouter.post('/', authenticate.verifyUser, postCart)
 cartRouter.put('/', authenticate.verifyUser, putCart)
@@ -20,7 +20,7 @@ async function getCart (req, res) {
         const cartitems = await Cartitem.find({ user: req.user._id }).populate('user')
         res.status(200).json(cartitems);
     } catch (err) {
-        console.error(err);
+        res.status(500).json(`Could not get items in cart!`)
     }
 }
 
@@ -30,7 +30,7 @@ async function postCart (req, res) {
         const cartitem = await Cartitem.create(req.body);
         res.status(200).json(cartitem);
     } catch (err) {
-        console.error(err);
+        res.status(500).json(`Could not post item to cart!`)
     }
 }
 
@@ -38,7 +38,7 @@ async function putCart (req, res) {
     try {
         res.status(403).end(`PUT operation not supported on /cartitems`);
     } catch (err) {
-        console.error(err);
+        res.status(500).json(`Could not update item!`)
     }
 }
 
@@ -46,7 +46,7 @@ async function deleteCart (req, res) {
     try {
         res.status(403).end(`DELETE operation not supported on /cartitems`);
     } catch (err) {
-        console.error(err);
+        res.status(500).json(`Could not delete item!`)
     }
 }
 
@@ -59,7 +59,7 @@ async function getCartItem (req, res) {
             res.status(403).json('This is not an item in your cart!')
         }
     } catch (err) {
-        res.status(403).json('This is not an item in your cart!')
+        res.status(500).json(`Could not find cart item!`)
     }
 }
 
@@ -67,7 +67,7 @@ async function postCartItem (req, res) {
     try {
         res.status(403).end(`POST operation not supported on /cartitems/${req.params.productId}`);
     } catch (err) {
-        console.error(err);
+        res.status(500).json(`Could not post item to cart!`)
     }
 }
 
@@ -85,7 +85,7 @@ async function putCartItem (req, res) {
             res.status(403).json('This is not an item in your cart!');
         }
     } catch (err) {
-        res.status(403).json('This is not an item in your cart!');
+        res.status(500).json(`Could not update cart item!`)
     }
 }
 
@@ -99,7 +99,7 @@ async function deleteCartItem (req, res) {
             res.status(403).json('This is not an item in your cart!');
         }
     } catch (err) {
-        res.status(403).json('Could not delete this item!');
+        res.status(500).json(`Could not delete cart item!`)
     }
 }
 

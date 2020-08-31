@@ -7,6 +7,92 @@ const electronicsRouter = express.Router();
 
 electronicsRouter.use(bodyParser.json());
 
+electronicsRouter.use(bodyParser.json())
+electronicsRouter.get('/', getElectronics)
+electronicsRouter.post('/', authenticate.verifyUser, authenticate.verifyAdmin, postElectronics)
+electronicsRouter.put('/', authenticate.verifyUser, authenticate.verifyAdmin, putElectronics)
+electronicsRouter.delete('/', authenticate.verifyUser, authenticate.verifyAdmin, deleteElectronics)
+electronicsRouter.get('/:productId', getItem)
+electronicsRouter.post('/:productId', authenticate.verifyUser, authenticate.verifyAdmin, postItem)
+electronicsRouter.put('/:productId', authenticate.verifyUser, authenticate.verifyAdmin, putItem)
+electronicsRouter.delete('/:productId', authenticate.verifyUser, authenticate.verifyAdmin, deleteItem)
+
+async function getElectronics (req, res) {
+    try {
+        const electronics = await Electronic.find();
+        res.status(200).json(electronics);
+    } catch (err) {
+        res.status(500).json('Could not find electronics!');
+    }
+}
+
+async function postElectronics (req, res) {
+    try {
+        const electronics = await Electronic.create(req.body);
+        console.log('Product Created ', electronics);
+        res.status(200).json(electronics);
+    } catch (err) {
+        res.status(500).json('Could not post electronics!');
+    }
+}
+
+async function putElectronics (req, res) {
+    try {
+        res.status(403).end(`PUT operation not supported on /electronics`);
+    } catch (err) {
+        res.status(500).json('Operation failed.');
+    }
+}
+
+async function deleteElectronics (req, res) {
+    try {
+        const response = await Electronic.deleteMany();
+        res.status(200).json(response);
+    } catch (err) {
+        res.status(500).json('Could not delete electronics!');
+    }
+}
+
+async function getItem (req, res) {
+    try {
+        const item = await Electronic.findById(req.params.productId);
+        res.status(200).json(item);
+    } catch (err) {
+        res.status(500).json('Could not find item!');
+    }
+}
+
+async function postItem (req, res) {
+    try {
+        res.status(403).end(`POST operation not supported on /electronics/${req.params.productId}`);
+    } catch (err) {
+        res.status(500).json(`Could not post item!`)
+    }
+}
+
+async function putItem (req, res) {
+    try {
+        const item = await Electronic.findByIdAndUpdate(
+            req.params.productId, 
+            { $set: req.body }, 
+            { new: true }
+        );
+        res.status(200).json(item);
+    } catch (err) {
+        res.status(500).json(`Could not update item!`)
+    }
+}
+
+async function deleteItem (req, res) {
+    try {
+        const response = await Electronic.findByIdAndDelete(req.params.productId);
+        res.status(200).json(response);
+    } catch (err) {
+        res.status(500).json(`Could not delete item!`)
+    }
+}
+
+/*
 electronicsRouter
     .route('/')
     .get((req, res, next) => {
@@ -79,6 +165,6 @@ electronicsRouter
             })
             .catch(err => next(err));
     });
-
+*/
 
 module.exports = electronicsRouter;
