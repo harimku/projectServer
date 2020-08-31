@@ -15,7 +15,7 @@ async function getUsers (req, res) {
         const users = await User.find();
         res.status(200).json(users);
     } catch (err) {
-        console.error(err);
+        res.status(500).json(`Could not find user!`)
     }
 }   
       
@@ -33,7 +33,7 @@ async function registerUser (req, res) {
             res.status(200).json({ success: true, status: 'Registration Successful!' });
         });
     } catch {
-        console.error(err);
+        res.status(500).json(`Could not register user!`)
     }
 }
 
@@ -46,11 +46,10 @@ async function loginUser (req, res) {
             status: 'You are successfully logged in!',
         });
     } catch (err) {
-        console.error(err);
+        res.status(500).json(`Could not log in user!`)
     }
 }
 
-    
 async function logoutUser (req, res) {
 
 }

@@ -7,6 +7,92 @@ const outdoorRouter = express.Router();
 
 outdoorRouter.use(bodyParser.json());
 
+outdoorRouter.use(bodyParser.json())
+outdoorRouter.get('/', getOutdoors)
+outdoorRouter.post('/', authenticate.verifyUser, authenticate.verifyAdmin, postOutdoors)
+outdoorRouter.put('/', authenticate.verifyUser, authenticate.verifyAdmin, putOutdoors)
+outdoorRouter.delete('/', authenticate.verifyUser, authenticate.verifyAdmin, deleteOutdoors)
+outdoorRouter.get('/:productId', getItem)
+outdoorRouter.post('/:productId', authenticate.verifyUser, authenticate.verifyAdmin, postItem)
+outdoorRouter.put('/:productId', authenticate.verifyUser, authenticate.verifyAdmin, putItem)
+outdoorRouter.delete('/:productId', authenticate.verifyUser, authenticate.verifyAdmin, deleteItem)
+
+async function getOutdoors (req, res) {
+    try {
+        const outdoors = await Outdoor.find();
+        res.status(200).json(outdoors);
+    } catch (err) {
+        res.status(500).json('Could not find outdoors!');
+    }
+}
+
+async function postOutdoors (req, res) {
+    try {
+        const outdoors = await Outdoor.create(req.body);
+        console.log('Product Created ', outdoors);
+        res.status(200).json(outdoors);
+    } catch (err) {
+        res.status(500).json('Could not post outdoors!');
+    }
+}
+
+async function putOutdoors (req, res) {
+    try {
+        res.status(403).end(`PUT operation not supported on /outdoors`);
+    } catch (err) {
+        res.status(500).json('Operation failed.');
+    }
+}
+
+async function deleteOutdoors (req, res) {
+    try {
+        const response = await Outdoor.deleteMany();
+        res.status(200).json(response);
+    } catch (err) {
+        res.status(500).json('Could not delete outdoors!');
+    }
+}
+
+async function getItem (req, res) {
+    try {
+        const item = await Outdoor.findById(req.params.productId);
+        res.status(200).json(item);
+    } catch (err) {
+        res.status(500).json('Could not find item!');
+    }
+}
+
+async function postItem (req, res) {
+    try {
+        res.status(403).end(`POST operation not supported on /outdoors/${req.params.productId}`);
+    } catch (err) {
+        res.status(500).json(`Could not post item!`)
+    }
+}
+
+async function putItem (req, res) {
+    try {
+        const item = await Outdoor.findByIdAndUpdate(
+            req.params.productId, 
+            { $set: req.body }, 
+            { new: true }
+        );
+        res.status(200).json(item);
+    } catch (err) {
+        res.status(500).json(`Could not update item!`)
+    }
+}
+
+async function deleteItem (req, res) {
+    try {
+        const response = await Outdoor.findByIdAndDelete(req.params.productId);
+        res.status(200).json(response);
+    } catch (err) {
+        res.status(500).json(`Could not delete item!`)
+    }
+}
+
+/*
 outdoorRouter
     .route('/')
     .get((req, res, next) => {
@@ -79,5 +165,6 @@ outdoorRouter
             })
             .catch(err => next(err));
     });
+*/
 
 module.exports = outdoorRouter;
